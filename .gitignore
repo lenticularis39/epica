@@ -1,0 +1,8 @@
+.idea
+epica
+*.o
+parser.tab.cc
+parser.tab.hh
+location.hh
+lexer.c
+lex.yy.c
