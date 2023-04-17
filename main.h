@@ -11,7 +11,7 @@ YY_DECL;
 class Driver {
 public:
     Driver();
-    int parse(const std::string &file);
+    int parse(const std::string &f);
     void scan_begin();
     void scan_end();
 
