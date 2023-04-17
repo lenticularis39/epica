@@ -23,7 +23,20 @@
 }
 
 %token <std::string> IDENT
-%token END 0 "end of file"
+%token
+    ENDOFFILE 0 "end of file"
+    IF          "if"
+    THEN        "then"
+    ELSE        "else"
+    ENDIF       "endif"
+    WHILE       "while"
+    DO          "do"
+    ENDWHILE    "endwhile"
+    COMMENCE    "commence"
+    END         "end"
+    VAR         "var"
+    FUNCTION    "function"
+;
 
 %%
 
