@@ -1,6 +1,6 @@
 CXXFLAGS=-O2 -std=c++17
 
-epica: main.o lexer.o parser.tab.o
+epica: main.o lexer.o parser.tab.o ast.o
 	g++ $(LDFLAGS) $^ -o epica
 .PHONY: clean
 clean:
