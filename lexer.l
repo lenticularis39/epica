@@ -7,8 +7,12 @@
 %}
 
 id    [a-zA-Z][a-zA-Z_0-9]*
+type  int|bool|void
 int   [0-9]+
+bool  true|false
 blank [ \t\r]
+
+rel   >|<|>=|<=
 
 %%
 
@@ -24,17 +28,30 @@ blank [ \t\r]
 "if"        return yy::parser::make_IF(loc);
 "then"      return yy::parser::make_THEN(loc);
 "else"      return yy::parser::make_ELSE(loc);
-"endif"     return yy::parser::make_ENDIF(loc);
 "while"     return yy::parser::make_WHILE(loc);
 "do"        return yy::parser::make_DO(loc);
-"endwhile"  return yy::parser::make_ENDWHILE(loc);
 "commence"  return yy::parser::make_COMMENCE(loc);
 "end"       return yy::parser::make_END(loc);
 "var"       return yy::parser::make_VAR(loc);
-"function"  return yy::parser::make_FUNCTION(loc);
 
+"("         return yy::parser::make_LPAREN(loc);
+")"         return yy::parser::make_RPAREN(loc);
+","         return yy::parser::make_COMMA(loc);
+":="        return yy::parser::make_ASSIGN(loc);
+"|"         return yy::parser::make_LOR(loc);
+"&"         return yy::parser::make_LAND(loc);
+"^"         return yy::parser::make_LXOR(loc);
+"or"        return yy::parser::make_OR(loc);
+"xor"       return yy::parser::make_XOR(loc);
+"and"       return yy::parser::make_AND(loc);
+"="         return yy::parser::make_EQ(loc);
+{rel}       return yy::parser::make_REL(loc);
+"+"         return yy::parser::make_ADD(loc);
+"*"         return yy::parser::make_MULT(loc);
+
+{type}      return yy::parser::make_TYPE(yytext, loc);
 {id}        return yy::parser::make_IDENT(yytext, loc);
-
+{int}       return yy::parser::make_INT(yytext, loc);
 %%
 
 void Driver::scan_begin () {

@@ -1,0 +1,17 @@
+void hello (int a, bool z) commence
+  var int a
+  var int b
+  var int c
+  a := (1 + 1 * 21 >= (8 * 12 + 2 xor 5)) = 1 + 42
+  b := 1 + 5 + 6 + 9 * 4 * 7 * 8 + 2 * 7 * 5
+  if a = 5 then commence
+    b := 2
+    a := 4
+  end else
+    b := 3
+  while b = 2 do commence
+    print(a)
+    sum(a, b, 5 + 8, 9 * 5 + 3)
+    c := gettimeofday()
+  end
+end
