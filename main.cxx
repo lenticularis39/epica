@@ -22,4 +22,10 @@ int main(int argc, char **argv) {
     }
 
     driver.parse(argv[1]);
+    std::cout << "Number of functions: " << driver.root->children.size() << std::endl;
+    for (Node *child : driver.root->children) {
+        auto fun = static_cast<Function *>(child);
+        std::cout << "Function: " << fun->name << std::endl;
+    }
+    delete driver.root;
 }

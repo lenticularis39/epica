@@ -45,11 +45,12 @@ rel   >|<|>=|<=
 "xor"       return yy::parser::make_XOR(loc);
 "and"       return yy::parser::make_AND(loc);
 "="         return yy::parser::make_EQ(loc);
-{rel}       return yy::parser::make_REL(loc);
+{rel}       return yy::parser::make_REL(yytext, loc);
 "+"         return yy::parser::make_ADD(loc);
 "*"         return yy::parser::make_MULT(loc);
 
 {type}      return yy::parser::make_TYPE(yytext, loc);
+{bool}      return yy::parser::make_BOOL(yytext, loc);
 {id}        return yy::parser::make_IDENT(yytext, loc);
 {int}       return yy::parser::make_INT(yytext, loc);
 %%

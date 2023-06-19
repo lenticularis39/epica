@@ -6,16 +6,27 @@
 #include "location.hh"
 
 enum class Type {
+    None,
     Int,
     Char,
     Bool,
+    Void,
 };
+Type type_from_string(const std::string &type);
+std::string type_to_string(Type type);
 
+enum class NodeKind {
+    Program,
+    Function,
+    Statement,
+    Expression,
+};
 class Node {
 public:
-    Node(yy::location loc);
+    Node(yy::location loc, NodeKind kind);
     ~Node();
     yy::location loc;
+    NodeKind kind;
     std::vector<Node *> children;
 };
 
@@ -30,6 +41,7 @@ struct Parameter {
     Type type;
     std::string name;
 };
+std::ostream &operator <<(std::ostream &out, Parameter par);
 
 class Variable;
 class Block;
@@ -43,9 +55,19 @@ public:
     std::vector<Variable *> vars;
 };
 
+enum class StatementKind {
+    Block,
+    Variable,
+    Expression,
+    Assignment,
+    While,
+    If,
+    Call,
+};
 class Statement : public Node {
 public:
-    Statement(yy::location loc);
+    Statement(yy::location loc, StatementKind kind);
+    StatementKind kind;
 };
 
 class Block : public Statement {
@@ -93,9 +115,17 @@ public:
     std::vector<Expression *> args;
 };
 
+enum class ExpressionKind {
+    BinOp,
+    Integer,
+    Boolean,
+    Identifier,
+    CallExpr,
+};
 class Expression : public Node {
 public:
-    Expression(yy::location loc);
+    Expression(yy::location loc, ExpressionKind kind);
+    ExpressionKind kind;
     Type type;
 };
 
@@ -114,6 +144,7 @@ enum class BinOpKind {
     Add,
     Mult,
 };
+BinOpKind resolve_relation_operator(const std::string &op);
 
 class BinOp : public Expression {
 public:
@@ -137,7 +168,7 @@ public:
 
 class Identifier : public Expression {
 public:
-    Identifier(std::string name);
+    Identifier(std::string namee, yy::location loc);
     std::string name;
 };
 

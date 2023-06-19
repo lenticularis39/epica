@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include "ast.h"
 #include "parser.tab.hh"
 
 #define YY_DECL yy::parser::symbol_type yylex(Driver &drv)
@@ -19,6 +20,7 @@ public:
     bool trace_parsing;
     bool trace_scanning;
     int result;
+    Node *root;
     yy::location location;
 };
 
