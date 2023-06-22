@@ -58,7 +58,6 @@ public:
 enum class StatementKind {
     Block,
     Variable,
-    Expression,
     Assignment,
     While,
     If,
@@ -168,7 +167,7 @@ public:
 
 class Identifier : public Expression {
 public:
-    Identifier(std::string namee, yy::location loc);
+    Identifier(std::string name, yy::location loc);
     std::string name;
 };
 

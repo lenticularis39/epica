@@ -1,0 +1,7 @@
+bool x(int y) commence
+end
+
+void main() commence
+  var int x
+  x := x(x)
+end

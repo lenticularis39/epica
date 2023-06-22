@@ -1,4 +1,6 @@
+#include <cstdlib>
 #include "main.h"
+#include "semantic_analyser.h"
 
 Driver::Driver() : trace_parsing(false), trace_scanning(false) { }
 
@@ -7,7 +9,7 @@ int Driver::parse(const std::string &f) {
     location.initialize(&file);
     scan_begin();
     yy::parser parse(*this);
-    parse.set_debug_level(1);
+    parse.set_debug_level(std::getenv("EPICA_DEBUG") ? std::stoi(std::getenv("EPICA_DEBUG")) : 0);
     int result = parse();
     scan_end();
     return result;
@@ -21,11 +23,11 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    driver.parse(argv[1]);
-    std::cout << "Number of functions: " << driver.root->children.size() << std::endl;
-    for (Node *child : driver.root->children) {
-        auto fun = static_cast<Function *>(child);
-        std::cout << "Function: " << fun->name << std::endl;
-    }
+    if (driver.parse(argv[1]))
+        return 1;
+
+    SemanticAnalyser semantic_analyser(static_cast<Program *>(driver.root));
+    semantic_analyser.analyse();
+
     delete driver.root;
 }

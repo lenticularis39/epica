@@ -1,0 +1,4 @@
+void hello (int a, bool z) commence
+  var int x
+  var bool x
+end

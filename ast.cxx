@@ -13,7 +13,9 @@ Node::~Node() {
 Program::Program(yy::location loc) : Node(loc, NodeKind::Program) {}
 
 Function::Function(Type type, const std::string &name, std::vector<Parameter> params, Block *body, yy::location loc)
-    : Node(loc, NodeKind::Function), type(type), name(name), params(params), body(body) {}
+    : Node(loc, NodeKind::Function), type(type), name(name), params(params), body(body) {
+    children.emplace_back(body);
+}
 
 Statement::Statement(yy::location loc, StatementKind kind) : Node(loc, NodeKind::Statement), kind(kind) {}
 
@@ -90,8 +92,10 @@ Type type_from_string(const std::string &type) {
 
 std::string type_to_string(Type type) {
     switch (type) {
+        case Type::None:
+            return "none";
         case Type::Int:
-            return "nonw";
+            return "int";
         case Type::Bool:
             return "bool";
         case Type::Char:
