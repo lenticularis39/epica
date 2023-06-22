@@ -107,6 +107,10 @@ std::string type_to_string(Type type) {
     }
 }
 
+bool is_builtin(const std::string &name) {
+    return name == "return" || name == "read" || name == "write";
+}
+
 BinOpKind resolve_relation_operator(const std::string &op) {
     static std::unordered_map<std::string, BinOpKind> map = {
        {">", BinOpKind::Gt},

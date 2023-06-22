@@ -24,6 +24,8 @@ bool SemanticAnalyser::scan_functions() {
 }
 
 bool SemanticAnalyser::resolve_types(Node *node) {
+    current = node;
+
     /* Resolve inherited attributes */
     switch (node->kind) {
         case NodeKind::Function:
@@ -68,6 +70,7 @@ bool SemanticAnalyser::resolve_types(Node *node) {
         if (!resolve_types(child))
             return false;
     }
+    current = node;
 
     /* Resolve synthesised attributes */
     switch (node->kind) {
@@ -196,7 +199,6 @@ bool SemanticAnalyser::resolve_types(Node *node) {
                     CallExpr *call = static_cast<CallExpr *>(expr);
                     if (!resolve_call(call->func_name, call->args, call->func, call->loc))
                         return false;
-                    expr->type = call->func->type;
                     break;
                 }
             }
@@ -212,6 +214,12 @@ bool SemanticAnalyser::resolve_types(Node *node) {
 
 bool SemanticAnalyser::resolve_call(const std::string &func_name, std::vector<Expression *> args,
                                     Function *&func, yy::location loc) {
+    /* Handle builtins */
+    if (is_builtin(func_name)) {
+        func = nullptr; /* builtin has no associated function */
+        return resolve_builtin_call(func_name, args, loc);
+    }
+
     /* Check if function is defined */
     auto func_iter = function_map.find(func_name);
     if (func_iter == function_map.end()) {
@@ -234,6 +242,44 @@ bool SemanticAnalyser::resolve_call(const std::string &func_name, std::vector<Ex
                                   type_to_string(func->params[i].type)), arg->loc);
             return false;
         }
+    }
+
+    /* Set expression type */
+    if (current->kind == NodeKind::Expression) {
+        static_cast<Expression *>(current)->type = func->type;
+    }
+
+    return true;
+}
+
+bool SemanticAnalyser::resolve_builtin_call(const std::string &builtin_name, std::vector<Expression *> args,
+                                            yy::location loc) {
+    if (builtin_name == "return") {
+        if (current_func->type != Type::Void) {
+            if (args.size() != 1) {
+                ast_error(std::format("return builtin takes exactly 1 argument, {} given", args.size()), loc);
+                return false;
+            }
+            if (args[0]->type != current_func->type) {
+                ast_error(std::format("return type of function {} is {}, {} given",
+                                      current_func->name,
+                                      type_to_string(current_func->type),
+                                      type_to_string(args[0]->type)), loc);
+                return false;
+            }
+        } else {
+            if (args.size() != 0) {
+                ast_error(std::format("return builtin takes exactly 0 argument, {} given", args.size()), loc);
+                return false;
+            }
+        }
+        if (current->kind == NodeKind::Expression) {
+            Expression *expr = static_cast<Expression *>(current);
+            expr->type = Type::Void;
+        }
+    } else {
+        ast_error(std::format("unknown builtin {}", builtin_name), loc);
+        return false;
     }
 
     return true;

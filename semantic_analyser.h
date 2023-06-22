@@ -7,6 +7,7 @@
 class SemanticAnalyser {
 private:
     Program *program;
+    Node *current;
     std::unordered_map<std::string, Function *> function_map;
     Function *current_func;
     std::unordered_map<std::string, Parameter> current_params;
@@ -14,6 +15,7 @@ private:
 
     bool resolve_types(Node *node);
     bool resolve_call(const std::string &func_name, std::vector<Expression *> args, Function *&func, yy::location loc);
+    bool resolve_builtin_call(const std::string &builtin_name, std::vector<Expression *> args, yy::location loc);
 public:
     SemanticAnalyser(Program *program);
     bool scan_functions();

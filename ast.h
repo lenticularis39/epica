@@ -179,4 +179,6 @@ public:
     std::vector<Expression *> args;
 };
 
+bool is_builtin(const std::string &name);
+
 #endif //EPICA_AST_H
