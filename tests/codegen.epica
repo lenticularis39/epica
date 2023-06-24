@@ -1,0 +1,33 @@
+bool not(bool x) commence
+  if x then
+    return(true)
+  else
+    return(false)
+end
+
+int fact_iter(int x) commence
+  var int i
+  var int n
+  i := 1
+  n := 1
+  while i <= n do commence
+   n := n * i
+   i := i + 1
+  end
+  return(n)
+end
+
+int fact_recursive(int x) commence
+  if x = 1 then
+    return(1)
+  else
+    return(x * fact_recursive(x + 1))
+end
+
+void main() commence
+    var bool x
+    if true then commence
+        x := 1 > 3
+    end else
+        x := 3 < 1
+end

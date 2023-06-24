@@ -1,6 +1,8 @@
 #include <cstdlib>
+#include <llvm/Support/raw_ostream.h>
 #include "main.h"
 #include "semantic_analyser.h"
+#include "codegen_llvm.h"
 
 Driver::Driver() : trace_parsing(false), trace_scanning(false) { }
 
@@ -27,7 +29,12 @@ int main(int argc, char **argv) {
         return 1;
 
     SemanticAnalyser semantic_analyser(static_cast<Program *>(driver.root));
-    semantic_analyser.analyse();
+    if (!semantic_analyser.analyse())
+        return 1;
+
+    CodegenLLVM codegen(static_cast<Program *>(driver.root));
+    llvm::Module *mod = codegen.compile();
+    llvm::outs() << *mod << "\n";
 
     delete driver.root;
 }
