@@ -34,7 +34,6 @@ class Function;
 class Program : public Node {
 public:
     Program(yy::location loc);
-    std::unordered_set<Function *> functions;
 };
 
 struct Parameter {
@@ -86,7 +85,6 @@ class Assignment : public Statement {
 public:
     Assignment(const std::string &var_name, Expression *expr, yy::location loc);
     std::string var_name;
-    Variable *var;
     Expression *expr;
 };
 
