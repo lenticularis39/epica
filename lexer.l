@@ -8,7 +8,7 @@
 
 id    [a-zA-Z][a-zA-Z_0-9]*
 type  int|bool|void
-int   [0-9]+
+int   -?[0-9]+
 bool  true|false
 blank [ \t\r]
 
