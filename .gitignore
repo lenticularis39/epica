@@ -1,6 +1,9 @@
 .idea
 epica
 *.o
+*.s
+*.ll
+*.test
 parser.tab.cc
 parser.tab.hh
 location.hh
