@@ -186,11 +186,33 @@ bool SemanticAnalyser::resolve_types(Node *node) {
                         case BinOpKind::And:
                         case BinOpKind::Add:
                         case BinOpKind::Mult:
+                        case BinOpKind::Sub:
                             if (binop->left->type != Type::Int || binop->right->type != Type::Int) {
                                 ast_error("arithmetic operator arguments must be bool", binop->loc);
                                 return false;
                             }
                             binop->type = Type::Int;
+                            break;
+                    }
+                    break;
+                }
+                case ExpressionKind::UnOp: {
+                    UnOp *unop = static_cast<UnOp *>(expr);
+                    switch (unop->kind) {
+                        case UnOpKind::Neg:
+                        case UnOpKind::Not:
+                            if (unop->arg->type != Type::Int) {
+                                ast_error("arithmetic operator argument must be bool", unop->loc);
+                                return false;
+                            }
+                            unop->type = Type::Int;
+                            break;
+                        case UnOpKind::LogNot:
+                            if (unop->arg->type != Type::Bool) {
+                                ast_error("logical operator argument must be bool", unop->loc);
+                                return false;
+                            }
+                            unop->type = Type::Bool;
                             break;
                     }
                     break;

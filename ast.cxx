@@ -66,6 +66,11 @@ BinOp::BinOp(BinOpKind kind, Expression *left, Expression *right, yy::location l
     children.emplace_back(static_cast<Node *>(right));
 }
 
+UnOp::UnOp(UnOpKind kind, Expression *arg, yy::location loc)
+        : Expression(loc, ExpressionKind::UnOp), kind(kind), arg(arg) {
+    children.emplace_back(static_cast<Node *>(arg));
+}
+
 Integer::Integer(int value, yy::location loc) : Expression(loc, ExpressionKind::Integer), value(value) {}
 
 Boolean::Boolean(bool value, yy::location loc) : Expression(loc, ExpressionKind::Boolean), value(value) {}

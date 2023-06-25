@@ -121,6 +121,9 @@ void CodegenLLVM::emit(Node *node) {
                         case BinOpKind::Mult:
                             int_kind = llvm::BinaryOperator::Mul;
                             goto binint;
+                        case BinOpKind::Sub:
+                            int_kind = llvm::BinaryOperator::Sub;
+                            goto binint;
                         case BinOpKind::Or:
                         case BinOpKind::LogOr:
                             int_kind = llvm::BinaryOperator::Or;
@@ -164,6 +167,21 @@ void CodegenLLVM::emit(Node *node) {
                                                                   current_bb);
                             break;
                     }
+                    break;
+                }
+                case ExpressionKind::UnOp: {
+                    UnOp *unop = static_cast<UnOp *>(expression);
+                    emit(static_cast<Node *>(unop->arg));
+                    /* Note: -x    ... 0 - x
+                             not x ... -1 (11...11) - x
+                             !x    ... -1 - x  */
+                    current_value = llvm::BinaryOperator::Create(llvm::BinaryOperator::Sub,
+                                                                 llvm::ConstantInt::get(get_type(unop->type),
+                                                                                        unop->kind == UnOpKind::Neg
+                                                                                            ? 0 : -1),
+                                                                 current_value,
+                                                                 "",
+                                                                 current_bb);
                     break;
                 }
                 case ExpressionKind::Integer: {

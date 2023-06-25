@@ -53,6 +53,9 @@
     EQ          "="
     ADD         "+"
     MULT        "*"
+    SUB         "-"
+    NOT         "not"
+    LNOT        "!"
 ;
 
 %type <Node *> program;
@@ -74,7 +77,7 @@
 %type <Integer *> integer;
 %type <Boolean *> bool;
 
-%left LOR LAND LXOR OR XOR AND EQ REL ADD MULT
+%left LOR LAND LXOR OR XOR AND EQ REL ADD MULT SUB
 %right THEN ELSE /* to avoid nested if-else SR conflict */
 
 %%
@@ -138,6 +141,9 @@ expression: logical_or { $$ = static_cast<Expression *>($1); }
 simple: literal              { $$ = $1; }
         | variable           { $$ = static_cast<Expression *>($1); }
         | call_expr          { $$ = static_cast<Expression *>($1); }
+        | "-" simple         { $$ = static_cast<Expression *>(new UnOp(UnOpKind::Neg, $2, @$)); }
+        | NOT simple         { $$ = static_cast<Expression *>(new UnOp(UnOpKind::Not, $2, @$)); }
+        | "!" simple         { $$ = static_cast<Expression *>(new UnOp(UnOpKind::LogNot, $2, @$)); }
         | "(" expression ")" { $$ = $2; }
         ;
 literal: integer { $$ = static_cast<Expression *>($1); }
@@ -183,6 +189,7 @@ relation: add                { $$ = $1; }
           ;
 add: multiply            { $$ = $1; }
      | add "+" multiply { $$ = static_cast<Expression *>(new BinOp(BinOpKind::Add, $1, $3, @$)); }
+     | add "-" multiply { $$ = static_cast<Expression *>(new BinOp(BinOpKind::Sub, $1, $3, @$)); }
      ;
 multiply: simple                { $$ = $1; }
           | multiply "*" simple { $$ = static_cast<Expression *>(new BinOp(BinOpKind::Mult, $1, $3, @$)); }

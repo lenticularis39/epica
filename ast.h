@@ -114,6 +114,7 @@ public:
 
 enum class ExpressionKind {
     BinOp,
+    UnOp,
     Integer,
     Boolean,
     Identifier,
@@ -140,6 +141,7 @@ enum class BinOpKind {
     Leq,
     Add,
     Mult,
+    Sub,
 };
 BinOpKind resolve_relation_operator(const std::string &op);
 
@@ -149,6 +151,18 @@ public:
     BinOpKind kind;
     Expression *left;
     Expression *right;
+};
+
+enum class UnOpKind {
+    Not,
+    LogNot,
+    Neg,
+};
+class UnOp : public Expression {
+public:
+    UnOp(UnOpKind kind, Expression *arg, yy::location loc);
+    UnOpKind kind;
+    Expression *arg;
 };
 
 class Integer : public Expression {

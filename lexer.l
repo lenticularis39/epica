@@ -47,7 +47,10 @@ rel   >|<|>=|<=
 "="         return yy::parser::make_EQ(loc);
 {rel}       return yy::parser::make_REL(yytext, loc);
 "+"         return yy::parser::make_ADD(loc);
+"-"         return yy::parser::make_SUB(loc);
 "*"         return yy::parser::make_MULT(loc);
+"not"       return yy::parser::make_NOT(loc);
+"!"         return yy::parser::make_LNOT(loc);
 
 {type}      return yy::parser::make_TYPE(yytext, loc);
 {bool}      return yy::parser::make_BOOL(yytext, loc);
