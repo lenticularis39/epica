@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+source=$1
+tempdir=$(mktemp -d -t epicaXXXXXXXXX)
+binary=${source%.*}
+base=$tempdir/$(basename -- $binary)
+PATH=$PWD:$PATH
+
+epica $source > $base.ll
+opt -O2 -S < $base.ll > $base.opt.ll
+llc $base.opt.ll -o $base.s
+gcc $base.s libepica.o -o $binary
+
+rm -r $tempdir
