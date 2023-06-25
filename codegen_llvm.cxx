@@ -35,7 +35,9 @@ llvm::Module *CodegenLLVM::compile() {
         assert(child->kind == NodeKind::Function);
         Function *fun = static_cast<Function *>(child);
         llvm::Function::Create(get_function_type(fun),
-                               llvm::Function::InternalLinkage,
+                               fun->name[0] == 'x' || fun->name == "main"
+                                    ? llvm::Function::ExternalLinkage
+                                    : llvm::Function::InternalLinkage,
                                fun->name,
                                mod);
     }
