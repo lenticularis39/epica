@@ -42,6 +42,18 @@ llvm::Module *CodegenLLVM::compile() {
                                mod);
     }
 
+    /* Create prototypes for builtins */
+    llvm::Function::Create(llvm::FunctionType::get(llvm::Type::getInt64Ty(ctx), {}, 0),
+                           llvm::Function::ExternalLinkage,
+                           "read",
+                           mod);
+    llvm::Function::Create(llvm::FunctionType::get(llvm::Type::getVoidTy(ctx),
+                                                   {llvm::Type::getInt64Ty(ctx)},
+                                                   0),
+                           llvm::Function::ExternalLinkage,
+                           "write",
+                           mod);
+
     /* Emit code for all functions */
     for (Node *child : program->children) {
         Function *fun = static_cast<Function *>(child);
@@ -97,11 +109,19 @@ void CodegenLLVM::emit(Node *node) {
                         emit(static_cast<Node *>(arg));
                         args.emplace_back(current_value);
                     }
-                    current_value = llvm::CallInst::Create(get_function_type(call->func),
-                                                           mod->getFunction(call->func_name),
-                                                           args,
-                                                           "",
-                                                           current_bb);
+                    if (call->func_name == "read") {
+                        current_value = llvm::CallInst::Create(llvm::FunctionType::get(llvm::Type::getInt64Ty(ctx), {}, 0),
+                                                          mod->getFunction(call->func_name),
+                                                               args,
+                                                               "",
+                                                               current_bb);
+                    } else {
+                        current_value = llvm::CallInst::Create(get_function_type(call->func),
+                                                               mod->getFunction(call->func_name),
+                                                               args,
+                                                               "",
+                                                               current_bb);
+                    }
                     break;
                 }
                 case ExpressionKind::BinOp: {
@@ -222,6 +242,14 @@ void CodegenLLVM::emit(Node *node) {
                         else
                             llvm::ReturnInst::Create(ctx, args[0], current_bb);
                         current_bb = llvm::BasicBlock::Create(ctx, "unreach", current_func);
+                    } else if (call->func_name == "write") {
+                        llvm::CallInst::Create(llvm::FunctionType::get(llvm::Type::getVoidTy(ctx),
+                                                                       {llvm::Type::getInt64Ty(ctx)},
+                                                                       0),
+                                               mod->getFunction(call->func_name),
+                                               args,
+                                               "",
+                                               current_bb);
                     } else {
                         llvm::CallInst::Create(get_function_type(call->func),
                                                mod->getFunction(call->func_name),

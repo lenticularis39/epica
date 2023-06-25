@@ -291,9 +291,32 @@ bool SemanticAnalyser::resolve_builtin_call(const std::string &builtin_name, std
             }
         } else {
             if (args.size() != 0) {
-                ast_error(std::format("return builtin takes exactly 0 argument, {} given", args.size()), loc);
+                ast_error(std::format("return builtin takes exactly 0 arguments, {} given", args.size()), loc);
                 return false;
             }
+        }
+        if (current->kind == NodeKind::Expression) {
+            Expression *expr = static_cast<Expression *>(current);
+            expr->type = Type::Void;
+        }
+    } else if (builtin_name == "read") {
+        if (args.size() != 0) {
+            ast_error(std::format("read builtin takes exactly 0 arguments, {} given", args.size()), loc);
+            return false;
+        }
+        if (current->kind == NodeKind::Expression) {
+            Expression *expr = static_cast<Expression *>(current);
+            expr->type = Type::Int;
+        }
+    } else if (builtin_name == "write") {
+        if (args.size() != 1) {
+            ast_error(std::format("write builtin takes exactly 1 argument, {} given", args.size()), loc);
+            return false;
+        }
+        if (args[0]->type != Type::Int) {
+            ast_error(std::format("write builtin takes int argument, {} given",
+                                  type_to_string(args[0]->type)), loc);
+            return false;
         }
         if (current->kind == NodeKind::Expression) {
             Expression *expr = static_cast<Expression *>(current);
