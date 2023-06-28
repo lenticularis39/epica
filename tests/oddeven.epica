@@ -1,0 +1,14 @@
+int main() commence
+    var int x
+    var bool y
+    x := 0
+    y := false
+    while x < 100 do commence
+        if y then
+            write(x * 10)
+        else
+            write(x * 100)
+        x := x + 1
+        y := !y
+    end
+end

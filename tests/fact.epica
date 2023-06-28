@@ -1,8 +1,8 @@
-bool not(bool x) commence
-  if x then
-    return(true)
-  else
-    return(false)
+int main() commence
+    var int x
+    x := read()
+    write(fact_iter(x))
+    write(fact_recursive(x))
 end
 
 int fact_iter(int x) commence
@@ -10,7 +10,7 @@ int fact_iter(int x) commence
   var int n
   i := 1
   n := 1
-  while i <= n do commence
+  while i <= x do commence
    n := n * i
    i := i + 1
   end
@@ -22,12 +22,4 @@ int fact_recursive(int x) commence
     return(1)
   else
     return(x * fact_recursive(x - 1))
-end
-
-void main() commence
-    var bool x
-    if true then commence
-        x := 1 > 3
-    end else
-        x := 3 < 1
 end

@@ -1,0 +1,3 @@
+int main() commence
+  write(5 + 4 * 3)
+end
